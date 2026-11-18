@@ -1,0 +1,48 @@
+#!/usr/bin/env fish
+set -g px 8
+set -g py 10
+set -g hp 5
+set -g gold 0
+set -g W 5
+
+function idx -a x y
+  math "($y - 1) * $W + $x"
+end
+
+function draw
+  clear
+  echo "HP: $hp Gold: $gold"
+  for y in (seq $W)
+    set -l row
+    for x in (seq $W)
+      if test $x -eq $px -a $y -eq $py
+        set -a row (set_color green)"@"(set_color normal)
+      else
+        set -a row $map[(idx $x $y)]
+      end
+    end
+    string join " " $row
+  end
+end
+
+
+set -g map
+
+for i in (seq 25)
+  set -a map (random choice . . . . "#" '$' M)
+end
+
+set map[1] .
+
+#game loop
+while test $hp -gt 0
+  draw
+  read -P "> (wasd, q): " -n 1 key
+  switch $key
+    case w; set py (math "max(1, $py - 1)")
+    case s; set py (math "min($W, $py + 1)")
+    case a; set px (math "max(1, $px -1)")
+    case d; set px (math "min($W, $px + 1)")
+    case q; break
+  end
+end    
